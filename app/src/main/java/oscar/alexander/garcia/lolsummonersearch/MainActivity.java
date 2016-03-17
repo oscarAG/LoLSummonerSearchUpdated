@@ -9,11 +9,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import api.calls.RankedStatsById;
 import api.calls.SummonerByName;
 import api.calls.Versions;
+import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
 
 public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, Versions.AsyncCallback, RankedStatsById.AsyncCallback{
@@ -99,7 +103,44 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             rankedStatsObject.printInfo();
             //create a structured list of champion objects
             List<RankedStatsByIdObject> rankedChampRawObjects = rankedStatsObject.getRankedChampionObjects();
-            //todo: create champion objects
+            List<ChampionRankedObject> rankedChampObjects = new ArrayList<>();
+            for(int i=0; i < rankedChampRawObjects.size(); i++){
+                RankedStatsByIdObject ro = rankedChampRawObjects.get(i);
+                ChampionRankedObject co = new ChampionRankedObject();
+                //set fields
+                try {
+                    co.setId(ro.getId());
+                    co.setTotalDeathsPerSession(ro.getAggreStats().getInt("totalDeathsPerSession"));
+                    co.setTotalSessionsPlayed(ro.getAggreStats().getInt("totalSessionsPlayed"));
+                    co.setTotalDamageTaken(ro.getAggreStats().getInt("totalDamageTaken"));
+                    co.setTotalQuadraKills(ro.getAggreStats().getInt("totalQuadraKills"));
+                    co.setTotalTripleKills(ro.getAggreStats().getInt("totalTripleKills"));
+                    co.setTotalMinionKills(ro.getAggreStats().getInt("totalMinionKills"));
+                    co.setMaxChampionsKilled(ro.getAggreStats().getInt("maxChampionsKilled"));
+                    co.setTotalDoubleKills(ro.getAggreStats().getInt("totalDoubleKills"));
+                    co.setTotalPhysicalDamageDealt(ro.getAggreStats().getInt("totalPhysicalDamageDealt"));
+                    co.setTotalChampionKills(ro.getAggreStats().getInt("totalChampionKills"));
+                    co.setTotalAssists(ro.getAggreStats().getInt("totalAssists"));
+                    co.setMostChampionKillsPerSession(ro.getAggreStats().getInt("mostChampionKillsPerSession"));
+                    co.setTotalDamageDealt(ro.getAggreStats().getInt("totalDamageDealt"));
+                    co.setTotalFirstBlood(ro.getAggreStats().getInt("totalFirstBlood"));
+                    co.setTotalSessionsLost(ro.getAggreStats().getInt("totalSessionsLost"));
+                    co.setTotalSessionsWon(ro.getAggreStats().getInt("totalSessionsWon"));
+                    co.setTotalMagicDamageDealt(ro.getAggreStats().getInt("totalMagicDamageDealt"));
+                    co.setTotalGoldEarned(ro.getAggreStats().getInt("totalGoldEarned"));
+                    co.setTotalPentaKills(ro.getAggreStats().getInt("totalPentaKills"));
+                    co.setTotalTurretsKilled(ro.getAggreStats().getInt("totalTurretsKilled"));
+                    co.setMostSpellsCast(ro.getAggreStats().getInt("mostSpellsCast"));
+                    co.setMaxNumDeaths(ro.getAggreStats().getInt("maxNumDeaths"));
+                    co.setTotalUnrealKills(ro.getAggreStats().getInt("totalUnrealKills"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //print the object
+                co.printInfo();
+                //add to list
+                rankedChampObjects.add(co);
+            }
         }
         else{
             Log.d("myapp", "rankedStatsByIdCallBack did not succeed.");
