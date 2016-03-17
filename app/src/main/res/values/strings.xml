@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">LoLSummonerSearch</string>
+
+    <string-array name="regions_array">
+        <item>North America</item>
+        <item>Brazil</item>
+        <item>EU Nordic/East</item>
+        <item>EU West</item>
+        <item>Korea</item>
+        <item>Latin North</item>
+        <item>Latin South</item>
+        <item>Oceania</item>
+        <item>PBE</item>
+        <item>Russia</item>
+        <item>Turkey</item>
+    </string-array>
+    <string-array name="seasons">
+        <item>Season 6</item>
+        <item>Season 5</item>
+        <item>Season 4</item>
+        <item>Season 3</item>
+    </string-array>
+</resources>
