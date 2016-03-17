@@ -10,17 +10,20 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import api.calls.ChampionStaticImageData;
 import api.calls.RankedStatsById;
 import api.calls.SummonerByName;
 import api.calls.Versions;
 import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
 
-public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, Versions.AsyncCallback, RankedStatsById.AsyncCallback{
+public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback, ChampionStaticImageData.AsyncCallback{
 
     public static final String API_KEY = "5ef85c1b-a4b7-4001-8b12-9a4fad596e08";
     private Spinner mRegionsSpinner;
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private SummonerByName summonerObject;
     private Versions versionsObject;
     private RankedStatsById rankedStatsObject;
+    private ChampionStaticImageData champImageDataObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +63,19 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void summonerCallBack() {
         if(summonerObject.isSuccess()){
+            Log.d("myapp", "summonerCallBack has succeeded.");
             //print info about the summoner being searched
             summonerObject.printInfo();
+            /*
             //execute second call
             versionsObject = new Versions(mRegionCode);
             versionsObject.registerCallBack(this);
             versionsObject.execute();
+            */
+            //execute third call
+            rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
+            rankedStatsObject.registerCallBack(this);
+            rankedStatsObject.execute();
         }
         else{
             Log.d("myapp", "summonerCallBack did not succeed.");
@@ -73,12 +84,15 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
     }
 
+    /* It appears that the most recent version can be obtained from the static champ image data endpoint, making this possibly redundant and unnecessary.
+     * Ignoring it for now, I had to remove the implements on the top, so make sure you put it back... todo: determine if this is needed, probably when i'm done.
     //2nd call finished
     //Versions endpoint
     //Executed when the versions endpoint has finished loading.
     @Override
     public void versionsCallBack() {
         if(versionsObject.isSuccess()){
+            Log.d("myapp", "versionsCallBack has succeeded.");
             //print versions available for static info
             versionsObject.printInfo();
             //execute third call
@@ -92,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             toast.show();
         }
     }
+    */
 
     //3rd call finished
     //RankedStatsById endpoint
@@ -99,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void rankedStatsByIdCallBack(){
         if(rankedStatsObject.isSuccess()){
+            Log.d("myapp", "rankedStatsByIdCallBack has succeeded.");
             //print the champion ids and their aggregated statistics
             rankedStatsObject.printInfo();
             //create a structured list of champion objects
@@ -141,12 +157,65 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 //add to list
                 rankedChampObjects.add(co);
             }
+            //execute 4th call
+            champImageDataObject = new ChampionStaticImageData(mRegionCode);
+            champImageDataObject.registerCallBack(this);
+            champImageDataObject.execute();
         }
         else{
             Log.d("myapp", "rankedStatsByIdCallBack did not succeed.");
             Toast toast = Toast.makeText(this, summonerObject.getName() + " doesn't have any ranked stats for " +
                     mSeasonsSpinner.getSelectedItem().toString() + ". Please try another season.", Toast.LENGTH_LONG);
             toast.show();
+        }
+    }
+
+    //4th call finished
+    //ChampionStaticData endpoint - image
+    //Executed when static data image has finished loading.
+    @Override
+    public void championStaticImageDataCallBack() {
+        if(champImageDataObject.isSuccess()){
+            Log.d("myapp", "championStaticImageData has succeeded.");
+            Log.d("myapp", champImageDataObject.getJsonResponse());
+            try {
+                //Extract top level data
+                JSONObject champData = new JSONObject(champImageDataObject.getJsonResponse()).getJSONObject("data");
+                String staticType = new JSONObject(champImageDataObject.getJsonResponse()).getString("type");
+                String imageVersion = new JSONObject(champImageDataObject.getJsonResponse()).getString("version");
+                Log.d("myapp", "staticType: " + staticType + "\n" + "imageVersion: " + imageVersion);
+                //get each champion object
+                Iterator<?> keys = champData.keys();
+                //traverse
+                while(keys.hasNext()){
+                    //todo: when updating champ objects, remember an id of 0 means it's overall stats
+                    String key = (String)keys.next();
+                    if(champData.get(key) instanceof JSONObject){
+                        JSONObject champObject = champData.getJSONObject(key);
+                        //extract data
+                        int champId = champObject.getInt("id");
+                        String champName = champObject.getString("name");
+                        String champTitle = champObject.getString("title");
+                        String champKey = champObject.getString("key");
+                        String champImgFull = champObject.getJSONObject("image").getString("full");
+                        String champImgSprite = champObject.getJSONObject("image").getString("sprite");
+                        String champImgGroup = champObject.getJSONObject("image").getString("group");
+                        //print
+                        Log.d("myapp", "ID: " + champId + "\n" +
+                                        "Name: " + champName + "\n" +
+                                        "Title: " + champTitle + "\n" +
+                                        "Key: " + champKey + "\n" +
+                                        "Image Full: " + champImgFull + "\n"  +
+                                        "Image Sprite: " + champImgSprite + "\n" +
+                                        "Image Group: " + champImgGroup + "\n");
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            Log.d("myapp", "championStaticImageData did not succeed.");
         }
     }
 
