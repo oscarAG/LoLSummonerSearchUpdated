@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
     private String mRegionCode, mSeasonCode, formattedName;
+    private List<ChampionRankedObject> rankedChampObjects;
     //API endpoint calls
     private SummonerByName summonerObject;
     private Versions versionsObject;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         if(summonerObject.isSuccess()){
             Log.d("myapp", "summonerCallBack has succeeded.");
             //print info about the summoner being searched
-            summonerObject.printInfo();
+            //summonerObject.printInfo();
             /*
             //execute second call
             versionsObject = new Versions(mRegionCode);
@@ -116,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         if(rankedStatsObject.isSuccess()){
             Log.d("myapp", "rankedStatsByIdCallBack has succeeded.");
             //print the champion ids and their aggregated statistics
-            rankedStatsObject.printInfo();
+            //rankedStatsObject.printInfo();
             //create a structured list of champion objects
             List<RankedStatsByIdObject> rankedChampRawObjects = rankedStatsObject.getRankedChampionObjects();
-            List<ChampionRankedObject> rankedChampObjects = new ArrayList<>();
+            rankedChampObjects = new ArrayList<>();
             for(int i=0; i < rankedChampRawObjects.size(); i++){
                 RankedStatsByIdObject ro = rankedChampRawObjects.get(i);
                 ChampionRankedObject co = new ChampionRankedObject();
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                     e.printStackTrace();
                 }
                 //print the object
-                co.printInfo();
+                //co.printInfo();
                 //add to list
                 rankedChampObjects.add(co);
             }
@@ -177,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public void championStaticImageDataCallBack() {
         if(champImageDataObject.isSuccess()){
             Log.d("myapp", "championStaticImageData has succeeded.");
-            Log.d("myapp", champImageDataObject.getJsonResponse());
             try {
                 //Extract top level data
                 JSONObject champData = new JSONObject(champImageDataObject.getJsonResponse()).getJSONObject("data");
@@ -187,27 +187,25 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 //get each champion object
                 Iterator<?> keys = champData.keys();
                 //traverse
+                //todo: somewhat inefficient, runtime of 2n
                 while(keys.hasNext()){
                     //todo: when updating champ objects, remember an id of 0 means it's overall stats
                     String key = (String)keys.next();
                     if(champData.get(key) instanceof JSONObject){
                         JSONObject champObject = champData.getJSONObject(key);
-                        //extract data
-                        int champId = champObject.getInt("id");
-                        String champName = champObject.getString("name");
-                        String champTitle = champObject.getString("title");
-                        String champKey = champObject.getString("key");
-                        String champImgFull = champObject.getJSONObject("image").getString("full");
-                        String champImgSprite = champObject.getJSONObject("image").getString("sprite");
-                        String champImgGroup = champObject.getJSONObject("image").getString("group");
-                        //print
-                        Log.d("myapp", "ID: " + champId + "\n" +
-                                        "Name: " + champName + "\n" +
-                                        "Title: " + champTitle + "\n" +
-                                        "Key: " + champKey + "\n" +
-                                        "Image Full: " + champImgFull + "\n"  +
-                                        "Image Sprite: " + champImgSprite + "\n" +
-                                        "Image Group: " + champImgGroup + "\n");
+                        for(int i = 0; i < rankedChampObjects.size(); i++){
+                            //update champ object
+                            if(rankedChampObjects.get(i).getId() == champObject.getInt("id")){
+                                Log.d("myapp", "Match found.");
+                                rankedChampObjects.get(i).setName(champObject.getString("name"));
+                                rankedChampObjects.get(i).setTitle(champObject.getString("title"));
+                                rankedChampObjects.get(i).setKey(champObject.getString("key"));
+                                rankedChampObjects.get(i).setImageFull(champObject.getJSONObject("image").getString("full"));
+                                rankedChampObjects.get(i).setImageSprite(champObject.getJSONObject("image").getString("sprite"));
+                                rankedChampObjects.get(i).setImageGroup(champObject.getJSONObject("image").getString("group"));
+                                //rankedChampObjects.get(i).printInfo(); //print
+                            }
+                        }
                     }
                 }
             } catch (JSONException e) {

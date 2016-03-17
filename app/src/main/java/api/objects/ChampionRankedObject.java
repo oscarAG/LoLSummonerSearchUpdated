@@ -6,30 +6,36 @@ import android.util.Log;
  * Created by Oscar on 3/17/2016.
  */
 public class ChampionRankedObject {
-    int id;
-    int totalDeathsPerSession;
-    int totalSessionsPlayed;
-    int totalDamageTaken;
-    int totalQuadraKills;
-    int totalTripleKills;
-    int totalMinionKills;
-    int maxChampionsKilled;
-    int totalDoubleKills;
-    int totalPhysicalDamageDealt;
-    int totalChampionKills;
-    int totalAssists;
-    int mostChampionKillsPerSession;
-    int totalDamageDealt;
-    int totalFirstBlood;
-    int totalSessionsLost;
-    int totalSessionsWon;
-    int totalMagicDamageDealt;
-    int totalGoldEarned;
-    int totalPentaKills;
-    int totalTurretsKilled;
-    int mostSpellsCast;
-    int maxNumDeaths;
-    int totalUnrealKills;
+    private String name;
+    private String key;
+    private String title;
+    private String imageFull;
+    private String imageSprite;
+    private String imageGroup;
+    private int id;
+    private int totalDeathsPerSession;
+    private int totalSessionsPlayed;
+    private int totalDamageTaken;
+    private int totalQuadraKills;
+    private int totalTripleKills;
+    private int totalMinionKills;
+    private int maxChampionsKilled;
+    private int totalDoubleKills;
+    private int totalPhysicalDamageDealt;
+    private int totalChampionKills;
+    private int totalAssists;
+    private int mostChampionKillsPerSession;
+    private int totalDamageDealt;
+    private int totalFirstBlood;
+    private int totalSessionsLost;
+    private int totalSessionsWon;
+    private int totalMagicDamageDealt;
+    private int totalGoldEarned;
+    private int totalPentaKills;
+    private int totalTurretsKilled;
+    private int mostSpellsCast;
+    private int maxNumDeaths;
+    private int totalUnrealKills;
 
     public int getId() {
         return id;
@@ -224,8 +230,63 @@ public class ChampionRankedObject {
         this.totalUnrealKills = totalUnrealKills;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImageFull() {
+        return imageFull;
+    }
+
+    public void setImageFull(String imageFull) {
+        this.imageFull = imageFull;
+    }
+
+    public String getImageSprite() {
+        return imageSprite;
+    }
+
+    public void setImageSprite(String imageSprite) {
+        this.imageSprite = imageSprite;
+    }
+
+    public String getImageGroup() {
+        return imageGroup;
+    }
+
+    public void setImageGroup(String imageGroup) {
+        this.imageGroup = imageGroup;
+    }
+
     public void printInfo(){
-        Log.d("myapp", "ID: " + getId() + "\n" +
+        Log.d("myapp",
+                        "ID: " + getId() + "\n" +
+                        "Name: " + getName() + "\n" +
+                        "Key: " + getKey() + "\n" +
+                        "Title: " + getTitle() + "\n" +
+                        "ImageFull: " + getImageFull() + "\n" +
+                        "ImageSprite: " + getImageSprite() + "\n" +
+                        "ImageGroup: " + getImageGroup() + "\n" +
                         "Total Deaths per Session: " + getTotalDeathsPerSession() + "\n" +
                         "Total Sessions played: " + getTotalSessionsPlayed() + "\n" +
                         "Total Damage Taken: " + getTotalDamageTaken() + "\n" +
