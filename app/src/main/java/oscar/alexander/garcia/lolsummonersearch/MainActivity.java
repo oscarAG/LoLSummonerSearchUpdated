@@ -17,24 +17,27 @@ import java.util.Iterator;
 import java.util.List;
 
 import api.calls.ChampionStaticImageData;
+import api.calls.ProfileIcon;
 import api.calls.RankedStatsById;
 import api.calls.SummonerByName;
 import api.calls.Versions;
 import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
 
-public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback, ChampionStaticImageData.AsyncCallback{
+public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback, ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback{
 
     public static final String API_KEY = "5ef85c1b-a4b7-4001-8b12-9a4fad596e08";
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
     private String mRegionCode, mSeasonCode, formattedName;
     private List<ChampionRankedObject> rankedChampObjects;
+    public static String imageVersion;
     //API endpoint calls
     private SummonerByName summonerObject;
     private Versions versionsObject;
     private RankedStatsById rankedStatsObject;
     private ChampionStaticImageData champImageDataObject;
+    private ProfileIcon profileIconObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
             rankedStatsObject.registerCallBack(this);
             rankedStatsObject.execute();
+
         }
         else{
             Log.d("myapp", "summonerCallBack did not succeed.");
@@ -182,8 +186,8 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 //Extract top level data
                 JSONObject champData = new JSONObject(champImageDataObject.getJsonResponse()).getJSONObject("data");
                 String staticType = new JSONObject(champImageDataObject.getJsonResponse()).getString("type");
-                String imageVersion = new JSONObject(champImageDataObject.getJsonResponse()).getString("version");
-                Log.d("myapp", "staticType: " + staticType + "\n" + "imageVersion: " + imageVersion);
+                imageVersion = new JSONObject(champImageDataObject.getJsonResponse()).getString("version");
+                //Log.d("myapp", "staticType: " + staticType + "\n" + "imageVersion: " + imageVersion);
                 //get each champion object
                 Iterator<?> keys = champData.keys();
                 //traverse
@@ -196,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                         for(int i = 0; i < rankedChampObjects.size(); i++){
                             //update champ object
                             if(rankedChampObjects.get(i).getId() == champObject.getInt("id")){
-                                Log.d("myapp", "Match found.");
+                                //Log.d("myapp", "Match found.");
                                 rankedChampObjects.get(i).setName(champObject.getString("name"));
                                 rankedChampObjects.get(i).setTitle(champObject.getString("title"));
                                 rankedChampObjects.get(i).setKey(champObject.getString("key"));
@@ -208,12 +212,29 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                         }
                     }
                 }
+                //5th call
+                profileIconObject = new ProfileIcon(summonerObject.getProfileIconId());
+                profileIconObject.registerCallBack(this);
+                profileIconObject.execute();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         else{
             Log.d("myapp", "championStaticImageData did not succeed.");
+        }
+    }
+
+    //5th call finished
+    //Profile icon static data endpoint
+    @Override
+    public void profileIconCallBack() {
+        if(profileIconObject.isSuccess()){
+            Log.d("myapp", "profileIcon has succeeded.");
+        }
+        else{
+            Log.d("myapp", "profileIcon did not succeed.");
         }
     }
 
