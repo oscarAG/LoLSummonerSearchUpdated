@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import api.calls.AllChampionsSquareImage;
 import api.calls.ChampionStaticImageData;
 import api.calls.ProfileIcon;
 import api.calls.RankedStatsById;
@@ -24,20 +25,22 @@ import api.calls.Versions;
 import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
 
-public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback, ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback{
+public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback,
+        ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback{
 
     public static final String API_KEY = "5ef85c1b-a4b7-4001-8b12-9a4fad596e08";
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
-    private String mRegionCode, mSeasonCode, formattedName;
+    private String mRegionCode;
+    private String mSeasonCode;
     private List<ChampionRankedObject> rankedChampObjects;
     public static String imageVersion;
     //API endpoint calls
     private SummonerByName summonerObject;
-    private Versions versionsObject;
     private RankedStatsById rankedStatsObject;
-    private ChampionStaticImageData champImageDataObject;
+    private ChampionStaticImageData champImageDataObject; //champion static data with image field selected
     private ProfileIcon profileIconObject;
+    private AllChampionsSquareImage allChampionsSquareImageObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +57,8 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         setRegionCode(mRegionsSpinner.getSelectedItem().toString());
         setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
         EditText nameInput = (EditText)findViewById(R.id.nameInput);
-        formattedName = nameInput.getText().toString().toLowerCase().replace(" ", "");
         //execute first call
-        summonerObject = new SummonerByName(mRegionCode, formattedName);
+        summonerObject = new SummonerByName(mRegionCode, nameInput.getText().toString().toLowerCase().replace(" ", ""));
         summonerObject.registerCallBack(this);
         summonerObject.execute();
     }
@@ -70,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             Log.d("myapp", "summonerCallBack has succeeded.");
             //print info about the summoner being searched
             //summonerObject.printInfo();
-            /*
-            //execute second call
-            versionsObject = new Versions(mRegionCode);
-            versionsObject.registerCallBack(this);
-            versionsObject.execute();
-            */
             //execute third call
             rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
             rankedStatsObject.registerCallBack(this);
@@ -88,30 +84,6 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             toast.show();
         }
     }
-
-    /* It appears that the most recent version can be obtained from the static champ image data endpoint, making this possibly redundant and unnecessary.
-     * Ignoring it for now, I had to remove the implements on the top, so make sure you put it back... todo: determine if this is needed, probably when i'm done.
-    //2nd call finished
-    //Versions endpoint
-    //Executed when the versions endpoint has finished loading.
-    @Override
-    public void versionsCallBack() {
-        if(versionsObject.isSuccess()){
-            Log.d("myapp", "versionsCallBack has succeeded.");
-            //print versions available for static info
-            versionsObject.printInfo();
-            //execute third call
-            rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
-            rankedStatsObject.registerCallBack(this);
-            rankedStatsObject.execute();
-        }
-        else{
-            Log.d("myapp", "versionsCallBack did not succeed.");
-            Toast toast = Toast.makeText(this, "There was an issue getting some data, usually this means the servers are temporarily down.", Toast.LENGTH_LONG);
-            toast.show();
-        }
-    }
-    */
 
     //3rd call finished
     //RankedStatsById endpoint
@@ -216,6 +188,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 profileIconObject = new ProfileIcon(summonerObject.getProfileIconId());
                 profileIconObject.registerCallBack(this);
                 profileIconObject.execute();
+                //6th call, get all images for each ranked champion
+                allChampionsSquareImageObject = new AllChampionsSquareImage(rankedChampObjects);
+                allChampionsSquareImageObject.registerCallBack(this);
+                allChampionsSquareImageObject.execute();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -232,9 +208,23 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public void profileIconCallBack() {
         if(profileIconObject.isSuccess()){
             Log.d("myapp", "profileIcon has succeeded.");
+            //todo: set the image here
         }
         else{
             Log.d("myapp", "profileIcon did not succeed.");
+        }
+    }
+
+    //6th call finished
+    //All champion square images
+    @Override
+    public void allChampionSquaresCallBack() {
+        if(allChampionsSquareImageObject.isSuccess()){
+            Log.d("myapp", "allChampionSquareImageObject has succeeded.");
+            //todo: assign the images to their corresponding objects here
+        }
+        else{
+            Log.d("myapp", "allChampionSquareImageObject has not succeeded.");
         }
     }
 
@@ -326,4 +316,5 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 break;
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package api.objects;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 /**
@@ -12,6 +13,7 @@ public class ChampionRankedObject {
     private String imageFull;
     private String imageSprite;
     private String imageGroup;
+    private Bitmap championIcon;
     private int id;
     private int totalDeathsPerSession;
     private int totalSessionsPlayed;
@@ -276,6 +278,13 @@ public class ChampionRankedObject {
 
     public void setImageGroup(String imageGroup) {
         this.imageGroup = imageGroup;
+    }
+    public Bitmap getChampionIcon() {
+        return championIcon;
+    }
+
+    public void setChampionIcon(Bitmap championIcon) {
+        this.championIcon = championIcon;
     }
 
     public void printInfo(){
