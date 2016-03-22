@@ -1,20 +1,27 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import api.calls.AllChampionsSquareImage;
 import api.calls.ChampionStaticImageData;
@@ -84,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             toast.show();
         }
     }
+
+    //2nd call
 
     //3rd call finished
     //RankedStatsById endpoint
@@ -220,8 +229,20 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void allChampionSquaresCallBack() {
         if(allChampionsSquareImageObject.isSuccess()){
-            Log.d("myapp", "allChampionSquareImageObject has succeeded.");
             //todo: assign the images to their corresponding objects here
+            Map<Integer, Bitmap> idsAndImages = allChampionsSquareImageObject.getChampionIdBitmapMap();
+            if(idsAndImages != null){
+                Log.d("myapp", "allChampionSquareImageObject has succeeded.");
+                //assign the image to each ranked object
+                for (Object o : idsAndImages.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
+                    for(int i = 0; i < rankedChampObjects.size(); i++){
+                        if((Integer)pair.getKey() == rankedChampObjects.get(i).getId()){
+                            rankedChampObjects.get(i).setChampionIcon((Bitmap) pair.getValue()); //there's no way this will work
+                        }
+                    }
+                }
+            }
         }
         else{
             Log.d("myapp", "allChampionSquareImageObject has not succeeded.");

@@ -10,7 +10,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import api.objects.ChampionRankedObject;
 import oscar.alexander.garcia.lolsummonersearch.MainActivity;
@@ -21,8 +24,8 @@ import oscar.alexander.garcia.lolsummonersearch.MainActivity;
  */
 public class AllChampionsSquareImage extends AsyncTask<Void, Void, Void> {
     private AsyncCallback asyncCallback;
-    private List<URL> urls;
-    private List<Bitmap> championSquareImages;
+    private Map<Integer, URL> championImageIdsMap;
+    private Map<Integer, Bitmap> championIdBitmapMap;
     private boolean success;
 
     public boolean isSuccess() {
@@ -31,12 +34,12 @@ public class AllChampionsSquareImage extends AsyncTask<Void, Void, Void> {
 
     public AllChampionsSquareImage(List<ChampionRankedObject> champObjects){
         success = false;
-        this.championSquareImages = new ArrayList<>();
-        this.urls = new ArrayList<>();
+        this.championImageIdsMap = new HashMap<>();
+        this.championIdBitmapMap = new HashMap<>();
         try {
             for(int i=0; i < champObjects.size(); i++){
                 if(champObjects.get(i).getId() != 0){
-                    urls.add(new URL("http://ddragon.leagueoflegends.com/cdn/"+MainActivity.imageVersion+"/img/champion/"+champObjects.get(i).getKey()+".png"));
+                    championImageIdsMap.put(champObjects.get(i).getId(), new URL("http://ddragon.leagueoflegends.com/cdn/" + MainActivity.imageVersion + "/img/champion/" + champObjects.get(i).getKey() + ".png"));
                 }
             }
         } catch (MalformedURLException e) {
@@ -47,14 +50,20 @@ public class AllChampionsSquareImage extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        for(int i = 0; i < urls.size(); i++){
-            try {
-                championSquareImages.add(BitmapFactory.decodeStream((InputStream) urls.get(i).getContent()));
-            } catch (IOException e) {
-                e.printStackTrace();
+        int i = 0; //count images obtained
+        //Traverse map and obtain images, place into new map to preserve id
+        for (Object o : championImageIdsMap.entrySet()) {
+            Map.Entry pair = (Map.Entry) o;
+            if ((Integer) pair.getKey() != 0) {
+                try {
+                    championIdBitmapMap.put((Integer) pair.getKey(), BitmapFactory.decodeStream((InputStream) ((URL) pair.getValue()).getContent()));
+                    i++;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        Log.d("myapp", championSquareImages.size() + " champion square images initialized.");
+        Log.d("myapp", i + " champion images obtained.");
         return null;
     }
 
@@ -64,12 +73,12 @@ public class AllChampionsSquareImage extends AsyncTask<Void, Void, Void> {
         asyncCallback.allChampionSquaresCallBack();
     }
 
-    public List<Bitmap> getChampionSquareImages() {
-        return championSquareImages;
-    }
-
     public interface AsyncCallback{
         void allChampionSquaresCallBack();
+    }
+
+    public Map<Integer, Bitmap> getChampionIdBitmapMap() {
+        return championIdBitmapMap;
     }
 
     public void registerCallBack(AsyncCallback cb){
