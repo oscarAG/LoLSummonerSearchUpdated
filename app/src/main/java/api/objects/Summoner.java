@@ -9,6 +9,10 @@ public class Summoner {
     private long revisionDate;
     private int profileIconId;
     private long level;
+    private String division;
+    private String tier;
+    private long ranked_solo_wins;
+    private long ranked_solo_losses;
 
     public Summoner(String formattedName, long id, long revisionDate, int profileIconId, long level) {
         this.formattedName = formattedName;
@@ -56,5 +60,37 @@ public class Summoner {
 
     public void setLevel(long level) {
         this.level = level;
+    }
+
+    public String getDivision() {
+        return division;
+    }
+
+    public void setDivision(String division) {
+        this.division = division;
+    }
+
+    public String getTier() {
+        return tier;
+    }
+
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
+    public long getRanked_solo_wins() {
+        return ranked_solo_wins;
+    }
+
+    public void setRanked_solo_wins(long ranked_solo_wins) {
+        this.ranked_solo_wins = ranked_solo_wins;
+    }
+
+    public long getRanked_solo_losses() {
+        return ranked_solo_losses;
+    }
+
+    public void setRanked_solo_losses(long ranked_solo_losses) {
+        this.ranked_solo_losses = ranked_solo_losses;
     }
 }

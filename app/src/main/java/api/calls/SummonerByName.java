@@ -39,12 +39,12 @@ public class SummonerByName extends AsyncTask<Void, Void, Void> {
         this.asyncCallback = cb;
     }
 
-    public SummonerByName(String region, String name){
+    public SummonerByName(String name){
         this.isSuccess = false;
         this.name = name;
         //create the url to access
         try {
-            this.mUrl = new URL("https://"+region+".api.pvp.net/api/lol/"+region+"/v1.4/summoner/by-name/"+name+"?api_key="+ MainActivity.API_KEY);
+            this.mUrl = new URL("https://"+MainActivity.mRegionCode+".api.pvp.net/api/lol/"+MainActivity.mRegionCode+"/v1.4/summoner/by-name/"+name+"?api_key="+ MainActivity.API_KEY);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

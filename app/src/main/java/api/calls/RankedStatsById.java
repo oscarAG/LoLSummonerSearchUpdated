@@ -37,10 +37,10 @@ public class RankedStatsById extends AsyncTask<Void, Void, Void>{
         this.asyncCallback = cb;
     }
 
-    public RankedStatsById(String region, long id, String season){
+    public RankedStatsById(long id){
         //set url from params
         try {
-            url = new URL("https://"+region+".api.pvp.net/api/lol/"+region+"/v1.3/stats/by-summoner/"+id+"/ranked?season="+season+"&api_key="+ MainActivity.API_KEY);
+            url = new URL("https://"+MainActivity.mRegionCode+".api.pvp.net/api/lol/"+MainActivity.mRegionCode+"/v1.3/stats/by-summoner/"+id+"/ranked?season="+MainActivity.mSeasonCode+"&api_key="+ MainActivity.API_KEY);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

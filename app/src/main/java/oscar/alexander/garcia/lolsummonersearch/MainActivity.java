@@ -25,6 +25,7 @@ import java.util.Map;
 
 import api.calls.AllChampionsSquareImage;
 import api.calls.ChampionStaticImageData;
+import api.calls.LeagueById;
 import api.calls.ProfileIcon;
 import api.calls.RankedStatsById;
 import api.calls.SummonerByName;
@@ -34,13 +35,13 @@ import api.objects.RankedStatsByIdObject;
 import api.objects.Summoner;
 
 public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback,
-        ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback{
+        ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback, LeagueById.AsyncCallback{
 
     public static final String API_KEY = "5ef85c1b-a4b7-4001-8b12-9a4fad596e08";
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
-    private String mRegionCode;
-    private String mSeasonCode;
+    public static String mRegionCode;
+    public static String mSeasonCode;
     private List<ChampionRankedObject> rankedChampObjects;
     public static String imageVersion;
     private Summoner summoner;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private ChampionStaticImageData champImageDataObject; //champion static data with image field selected
     private ProfileIcon profileIconObject;
     private AllChampionsSquareImage allChampionsSquareImageObject;
+    private LeagueById leagueObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +68,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         setRegionCode(mRegionsSpinner.getSelectedItem().toString());
         setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
         EditText nameInput = (EditText)findViewById(R.id.nameInput);
+        Log.d("myapp", "New search - " + nameInput.getText().toString().toLowerCase().replace(" ", ""));
         //execute first call
-        summonerObject = new SummonerByName(mRegionCode, nameInput.getText().toString().toLowerCase().replace(" ", ""));
+        summonerObject = new SummonerByName(nameInput.getText().toString().toLowerCase().replace(" ", ""));
         summonerObject.registerCallBack(this);
         summonerObject.execute();
     }
@@ -78,21 +81,19 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void summonerCallBack() {
         if(summonerObject.isSuccess()){
-            Log.d("myapp", "summonerCallBack has succeeded.");
+            Log.d("myapp", "Success: summonerCallBack");
             summoner = new Summoner(summonerObject.getName(), summonerObject.getId(),summonerObject.getRevisionDate(), summonerObject.getProfileIconId(),summonerObject.getLevel());
             //execute third call
-            rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
+            rankedStatsObject = new RankedStatsById(summoner.getId());
             rankedStatsObject.registerCallBack(this);
             rankedStatsObject.execute();
         }
         else{
-            Log.d("myapp", "summonerCallBack did not succeed.");
+            Log.d("myapp", "Fail: summonerCallBack");
             Toast toast = Toast.makeText(this, "That summoner doesn't exist. Please try another name.", Toast.LENGTH_LONG);
             toast.show();
         }
     }
-
-    //2nd call
 
     //3rd call finished
     //RankedStatsById endpoint
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void rankedStatsByIdCallBack(){
         if(rankedStatsObject.isSuccess()){
-            Log.d("myapp", "rankedStatsByIdCallBack has succeeded.");
+            Log.d("myapp", "Success: rankedStatsByIdCallBack");
             //print the champion ids and their aggregated statistics
             //rankedStatsObject.printInfo();
             //create a structured list of champion objects
@@ -143,16 +144,36 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 //add to list
                 rankedChampObjects.add(co);
             }
+            //todo: since getting to this point means that the player actually has ranked stats for the season, this is where the league info should be obtained
+            //execute league call
+            leagueObject = new LeagueById(summoner.getId());
+            leagueObject.registerCallBack(this);
+            leagueObject.execute();
             //execute 4th call
             champImageDataObject = new ChampionStaticImageData(mRegionCode);
             champImageDataObject.registerCallBack(this);
             champImageDataObject.execute();
         }
         else{
-            Log.d("myapp", "rankedStatsByIdCallBack did not succeed.");
-            Toast toast = Toast.makeText(this, summonerObject.getName() + " doesn't have any ranked stats for " +
+            Log.d("myapp", "Fail: rankedStatsByIdCallBack");
+            Toast toast = Toast.makeText(this, summoner.getFormattedName() + " doesn't have any ranked stats for " +
                     mSeasonsSpinner.getSelectedItem().toString() + ". Please try another season.", Toast.LENGTH_LONG);
             toast.show();
+        }
+    }
+
+    //league call finished
+    @Override
+    public void leagueCallBack() {
+        if(leagueObject.isSuccess()){
+            Log.d("myapp", "Success: leagueCallback");
+            summoner.setDivision(leagueObject.getDivision());
+            summoner.setTier(leagueObject.getTier());
+            summoner.setRanked_solo_wins(leagueObject.getWins());
+            summoner.setRanked_solo_losses(leagueObject.getLosses());
+        }
+        else{
+            Log.d("myapp", "Fail: leagueCallback");
         }
     }
 
@@ -162,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void championStaticImageDataCallBack() {
         if(champImageDataObject.isSuccess()){
-            Log.d("myapp", "championStaticImageData has succeeded.");
+            Log.d("myapp", "Success: championStaticImageData");
             try {
                 //Extract top level data
                 JSONObject champData = new JSONObject(champImageDataObject.getJsonResponse()).getJSONObject("data");
@@ -207,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             }
         }
         else{
-            Log.d("myapp", "championStaticImageData did not succeed.");
+            Log.d("myapp", "Fail: championStaticImageData");
         }
     }
 
@@ -216,11 +237,11 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void profileIconCallBack() {
         if(profileIconObject.isSuccess()){
-            Log.d("myapp", "profileIcon has succeeded.");
+            Log.d("myapp", "Success: profileIcon");
             //todo: set the image here
         }
         else{
-            Log.d("myapp", "profileIcon did not succeed.");
+            Log.d("myapp", "Fail: profileIcon");
         }
     }
 
@@ -232,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             //todo: assign the images to their corresponding objects here
             Map<Integer, Bitmap> idsAndImages = allChampionsSquareImageObject.getChampionIdBitmapMap();
             if(idsAndImages != null){
-                Log.d("myapp", "allChampionSquareImageObject has succeeded.");
+                Log.d("myapp", "Success: allChampionSquareImageObject");
                 //assign the image to each ranked object
                 for (Object o : idsAndImages.entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
@@ -245,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             }
         }
         else{
-            Log.d("myapp", "allChampionSquareImageObject has not succeeded.");
+            Log.d("myapp", "Fail: allChampionSquareImageObject");
         }
     }
 
@@ -337,5 +358,4 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 break;
         }
     }
-
 }
