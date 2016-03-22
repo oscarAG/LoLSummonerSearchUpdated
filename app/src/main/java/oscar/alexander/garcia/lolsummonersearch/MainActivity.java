@@ -31,6 +31,7 @@ import api.calls.SummonerByName;
 import api.calls.Versions;
 import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
+import api.objects.Summoner;
 
 public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback,
         ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback{
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private String mSeasonCode;
     private List<ChampionRankedObject> rankedChampObjects;
     public static String imageVersion;
+    private Summoner summoner;
     //API endpoint calls
     private SummonerByName summonerObject;
     private RankedStatsById rankedStatsObject;
@@ -77,13 +79,11 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public void summonerCallBack() {
         if(summonerObject.isSuccess()){
             Log.d("myapp", "summonerCallBack has succeeded.");
-            //print info about the summoner being searched
-            //summonerObject.printInfo();
+            summoner = new Summoner(summonerObject.getName(), summonerObject.getId(),summonerObject.getRevisionDate(), summonerObject.getProfileIconId(),summonerObject.getLevel());
             //execute third call
             rankedStatsObject = new RankedStatsById(mRegionCode, summonerObject.getId(), mSeasonCode);
             rankedStatsObject.registerCallBack(this);
             rankedStatsObject.execute();
-
         }
         else{
             Log.d("myapp", "summonerCallBack did not succeed.");
