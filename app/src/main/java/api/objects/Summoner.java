@@ -1,6 +1,9 @@
 package api.objects;
 
+import android.graphics.Bitmap;
+
 /**
+ *
  * Created by Oscar on 3/22/2016.
  */
 public class Summoner {
@@ -13,6 +16,7 @@ public class Summoner {
     private String tier;
     private long ranked_solo_wins;
     private long ranked_solo_losses;
+    private Bitmap profileIcon;
 
     public Summoner(String formattedName, long id, long revisionDate, int profileIconId, long level) {
         this.formattedName = formattedName;
@@ -92,5 +96,13 @@ public class Summoner {
 
     public void setRanked_solo_losses(long ranked_solo_losses) {
         this.ranked_solo_losses = ranked_solo_losses;
+    }
+
+    public Bitmap getProfileIcon() {
+        return profileIcon;
+    }
+
+    public void setProfileIcon(Bitmap profileIcon) {
+        this.profileIcon = profileIcon;
     }
 }

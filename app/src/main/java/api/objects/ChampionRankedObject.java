@@ -44,7 +44,6 @@ public class ChampionRankedObject {
     }
 
     public void setId(int id) {
-        //todo: using this id, translate it into static data about the champion
         this.id = id;
     }
 

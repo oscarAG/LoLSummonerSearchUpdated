@@ -63,7 +63,6 @@ public class LeagueById extends AsyncTask<Void, Void, Void>{
     protected void onPostExecute(Void v){
         //parse info
         if(jsonResponse != null){
-            Log.d("myapp", jsonResponse);
             try {
                 JSONObject obj = new JSONObject(jsonResponse);
                 JSONArray arr = obj.getJSONArray(String.valueOf(id));

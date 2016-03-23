@@ -52,6 +52,13 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private ProfileIcon profileIconObject;
     private AllChampionsSquareImage allChampionsSquareImageObject;
     private LeagueById leagueObject;
+    //booleans
+    private boolean summIsDone = false;
+    private boolean rankStatsIsDone = false;
+    private boolean champImageDataIsDone = false;
+    private boolean profileIconIsDone = false;
+    private boolean allChampSquaresIsDone = false;
+    private boolean leagueIsDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         if(summonerObject.isSuccess()){
             Log.d("myapp", "Success: summonerCallBack");
             summoner = new Summoner(summonerObject.getName(), summonerObject.getId(),summonerObject.getRevisionDate(), summonerObject.getProfileIconId(),summonerObject.getLevel());
-            //execute third call
+            //execute ranked stats
             rankedStatsObject = new RankedStatsById(summoner.getId());
             rankedStatsObject.registerCallBack(this);
             rankedStatsObject.execute();
@@ -92,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             Log.d("myapp", "Fail: summonerCallBack");
             Toast toast = Toast.makeText(this, "That summoner doesn't exist. Please try another name.", Toast.LENGTH_LONG);
             toast.show();
+        }
+        summIsDone = true;
+        if(isAllDone()){
+            doneOperation();
         }
     }
 
@@ -139,17 +150,14 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //print the object
-                //co.printInfo();
                 //add to list
                 rankedChampObjects.add(co);
             }
-            //todo: since getting to this point means that the player actually has ranked stats for the season, this is where the league info should be obtained
-            //execute league call
+            //execute league
             leagueObject = new LeagueById(summoner.getId());
             leagueObject.registerCallBack(this);
             leagueObject.execute();
-            //execute 4th call
+            //execute champion static image data
             champImageDataObject = new ChampionStaticImageData(mRegionCode);
             champImageDataObject.registerCallBack(this);
             champImageDataObject.execute();
@@ -159,6 +167,12 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             Toast toast = Toast.makeText(this, summoner.getFormattedName() + " doesn't have any ranked stats for " +
                     mSeasonsSpinner.getSelectedItem().toString() + ". Please try another season.", Toast.LENGTH_LONG);
             toast.show();
+            reset();
+            Log.d("myapp", "Reset.");
+        }
+        rankStatsIsDone = true;
+        if(isAllDone()){
+            doneOperation();
         }
     }
 
@@ -167,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public void leagueCallBack() {
         if(leagueObject.isSuccess()){
             Log.d("myapp", "Success: leagueCallback");
+            //set summoner info
             summoner.setDivision(leagueObject.getDivision());
             summoner.setTier(leagueObject.getTier());
             summoner.setRanked_solo_wins(leagueObject.getWins());
@@ -174,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         else{
             Log.d("myapp", "Fail: leagueCallback");
+        }
+        leagueIsDone = true;
+        if(isAllDone()){
+            doneOperation();
         }
     }
 
@@ -189,13 +208,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 JSONObject champData = new JSONObject(champImageDataObject.getJsonResponse()).getJSONObject("data");
                 String staticType = new JSONObject(champImageDataObject.getJsonResponse()).getString("type");
                 imageVersion = new JSONObject(champImageDataObject.getJsonResponse()).getString("version");
-                //Log.d("myapp", "staticType: " + staticType + "\n" + "imageVersion: " + imageVersion);
                 //get each champion object
                 Iterator<?> keys = champData.keys();
                 //traverse
-                //todo: somewhat inefficient, runtime of 2n
                 while(keys.hasNext()){
-                    //todo: when updating champ objects, remember an id of 0 means it's overall stats
                     String key = (String)keys.next();
                     if(champData.get(key) instanceof JSONObject){
                         JSONObject champObject = champData.getJSONObject(key);
@@ -214,15 +230,14 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                         }
                     }
                 }
-                //5th call
-                profileIconObject = new ProfileIcon(summonerObject.getProfileIconId());
-                profileIconObject.registerCallBack(this);
-                profileIconObject.execute();
-                //6th call, get all images for each ranked champion
+                //execute images for played ranked champions
                 allChampionsSquareImageObject = new AllChampionsSquareImage(rankedChampObjects);
                 allChampionsSquareImageObject.registerCallBack(this);
                 allChampionsSquareImageObject.execute();
-
+                //execute profile icon
+                profileIconObject = new ProfileIcon(summonerObject.getProfileIconId());
+                profileIconObject.registerCallBack(this);
+                profileIconObject.execute();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -230,18 +245,27 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         else{
             Log.d("myapp", "Fail: championStaticImageData");
         }
+        champImageDataIsDone = true;
+        if(isAllDone()){
+            doneOperation();
+        }
     }
 
     //5th call finished
     //Profile icon static data endpoint
     @Override
     public void profileIconCallBack() {
+        //if successful, set the icon to the summoner object
         if(profileIconObject.isSuccess()){
             Log.d("myapp", "Success: profileIcon");
-            //todo: set the image here
+            summoner.setProfileIcon(profileIconObject.getProfileIcon());
         }
         else{
             Log.d("myapp", "Fail: profileIcon");
+        }
+        profileIconIsDone = true;
+        if(isAllDone()){
+            doneOperation();
         }
     }
 
@@ -250,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     @Override
     public void allChampionSquaresCallBack() {
         if(allChampionsSquareImageObject.isSuccess()){
-            //todo: assign the images to their corresponding objects here
+            //assign the images to their corresponding objects here
             Map<Integer, Bitmap> idsAndImages = allChampionsSquareImageObject.getChampionIdBitmapMap();
             if(idsAndImages != null){
                 Log.d("myapp", "Success: allChampionSquareImageObject");
@@ -268,6 +292,30 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         else{
             Log.d("myapp", "Fail: allChampionSquareImageObject");
         }
+        allChampSquaresIsDone = true;
+        if(isAllDone()){
+            doneOperation();
+        }
+    }
+
+    //do when everything is completed
+    private void doneOperation(){
+        reset();
+        Log.d("myapp", "Reset.");
+        Log.d("myapp", "All calls done.");
+    }
+
+    private boolean isAllDone(){
+        return summIsDone && rankStatsIsDone && champImageDataIsDone && profileIconIsDone && allChampSquaresIsDone && leagueIsDone;
+    }
+
+    private void reset(){
+        summIsDone = false;
+        rankStatsIsDone = false;
+        champImageDataIsDone = false;
+        profileIconIsDone = false;
+        allChampSquaresIsDone = false;
+        leagueIsDone = false;
     }
 
     //dynamically initialize a spinner for the regions
