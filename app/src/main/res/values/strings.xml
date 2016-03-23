@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LoLSummonerSearch</string>
 
+    <!-- Main Activity -->
     <string-array name="regions_array">
         <item>North America</item>
         <item>Brazil</item>
@@ -20,4 +21,7 @@
         <item>Season 4</item>
         <item>Season 3</item>
     </string-array>
+    <string name="summoner_label">SUMMONER:</string>
+    <string name="name_hint">ex. Dyrus</string>
+    <string name="search_button">Search</string>
 </resources>

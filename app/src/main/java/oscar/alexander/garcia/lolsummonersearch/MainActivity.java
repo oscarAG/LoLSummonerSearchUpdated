@@ -1,7 +1,10 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         //get values from the view components
         setRegionCode(mRegionsSpinner.getSelectedItem().toString());
         setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
-        EditText nameInput = (EditText)findViewById(R.id.nameInput);
+        EditText nameInput = (EditText)findViewById(R.id.name_input);
         Log.d("myapp", "New search - " + nameInput.getText().toString().toLowerCase().replace(" ", ""));
         //execute first call
         summonerObject = new SummonerByName(nameInput.getText().toString().toLowerCase().replace(" ", ""));
@@ -321,7 +324,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     //dynamically initialize a spinner for the regions
     private void initializeRegionsSpinner(){
         mRegionsSpinner = (Spinner) findViewById(R.id.spr_regions);
-        //mRegionsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigo), PorterDuff.Mode.SRC_ATOP);
+        //todo: fix spinner layout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mRegionsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
+        }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.regions_array, android.R.layout.simple_spinner_item);
@@ -334,7 +340,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     //dynamically initialize a spinner for the seasons
     private void initializeSeasonsSpinner(){
         mSeasonsSpinner = (Spinner) findViewById(R.id.spr_seasons);
-        //mSeasonsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigo), PorterDuff.Mode.SRC_ATOP);
+        //todo: fix spinner layout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mSeasonsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
+        }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.seasons, android.R.layout.simple_spinner_item);
