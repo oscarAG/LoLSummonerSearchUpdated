@@ -1,8 +1,10 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,9 +37,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private Spinner mSeasonsSpinner;
     public static String mRegionCode;
     public static String mSeasonCode;
-    private List<ChampionRankedObject> rankedChampObjects;
     public static String imageVersion;
-    private Summoner summoner;
+    protected static Summoner summoner;
+    protected static List<ChampionRankedObject> rankedChampObjects;
     //API endpoint calls
     private SummonerByName summonerObject;
     private RankedStatsById rankedStatsObject;
@@ -296,6 +298,8 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         reset();
         Log.d("myapp", "Reset.");
         Log.d("myapp", "All calls done.");
+        Intent intent = new Intent(this, RankedActivity.class);
+        startActivity(intent);
     }
 
     private boolean isAllDone(){
