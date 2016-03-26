@@ -1,9 +1,6 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -12,28 +9,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import api.calls.AllChampionsSquareImage;
 import api.calls.ChampionStaticImageData;
 import api.calls.LeagueById;
 import api.calls.ProfileIcon;
 import api.calls.RankedStatsById;
 import api.calls.SummonerByName;
-import api.calls.Versions;
 import api.objects.ChampionRankedObject;
 import api.objects.RankedStatsByIdObject;
 import api.objects.Summoner;
@@ -325,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     //dynamically initialize a spinner for the regions
     private void initializeRegionsSpinner(){
         mRegionsSpinner = (Spinner) findViewById(R.id.spr_regions);
-        //todo: fix spinner layout
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mRegionsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
         }
@@ -341,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     //dynamically initialize a spinner for the seasons
     private void initializeSeasonsSpinner(){
         mSeasonsSpinner = (Spinner) findViewById(R.id.spr_seasons);
-        //todo: fix spinner layout
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mSeasonsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
         }
