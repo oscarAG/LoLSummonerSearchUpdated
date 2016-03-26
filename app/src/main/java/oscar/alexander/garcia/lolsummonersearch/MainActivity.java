@@ -3,6 +3,7 @@ package oscar.alexander.garcia.lolsummonersearch;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -330,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.regions_array, android.R.layout.simple_spinner_item);
+                R.array.regions_array, R.layout.custom_spinner);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Apply the adapter to the spinner
@@ -346,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.seasons, android.R.layout.simple_spinner_item);
+                R.array.seasons, R.layout.custom_spinner);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Apply the adapter to the spinner

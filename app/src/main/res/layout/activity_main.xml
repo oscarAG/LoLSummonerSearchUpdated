@@ -61,6 +61,7 @@
                     android:layout_marginBottom="20dp"
                     android:onClick="search"/>
                 <Spinner
+                    android:theme="@style/customSpinnerTheme"
                     android:id="@+id/spr_regions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,6 +69,7 @@
                     android:paddingBottom="20dp"/>
                 <Spinner
                     android:id="@+id/spr_seasons"
+                    android:theme="@style/customSpinnerTheme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"/>
