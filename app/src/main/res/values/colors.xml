@@ -11,4 +11,5 @@
     <color name="whiteLightOpaque">#59000000</color>
     <color name="indigoLight">#5C6BC0</color>
     <color name="indigoDark">#3F51B5</color>
+    <color name="orange">#FFC107</color>
 </resources>

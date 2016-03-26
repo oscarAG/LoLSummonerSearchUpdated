@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public static String mRegionCode;
     public static String mSeasonCode;
     public static String imageVersion;
+    protected static String selectedSeason;
     protected static Summoner summoner;
     protected static List<ChampionRankedObject> rankedChampObjects;
     //API endpoint calls
@@ -62,6 +63,15 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         //initialize view components
         initializeRegionsSpinner();
         initializeSeasonsSpinner();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Log.d("myapp", "onRestart");
+        summoner = null;
+        rankedChampObjects = null;
+        reset();
     }
 
     //search button onClick method
@@ -149,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
                 rankedChampObjects.add(co);
             }
             //execute league
-            leagueObject = new LeagueById(summoner.getId());
+            leagueObject = new LeagueById(summoner.getId(), summoner.getFormattedName());
             leagueObject.registerCallBack(this);
             leagueObject.execute();
             //execute champion static image data
@@ -347,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
 
     //translate the season spinner selected object into api mnemonic
     private void setSeasonCode(String season){
+        selectedSeason = season;
         switch(season){
             case "Season 6":
                 mSeasonCode = "SEASON2016";

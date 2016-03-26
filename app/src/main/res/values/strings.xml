@@ -24,4 +24,10 @@
     <string name="summoner_label">SUMMONER:</string>
     <string name="name_hint">ex. Dyrus</string>
     <string name="search_button">Search</string>
+
+    <!-- Ranked Activity -->
+    <string name="picture_desc">Profile Icon</string>
+    <string name="unranked">Unranked</string>
+    <string name="wins_txt">Wins:</string>
+    <string name="losses_txt">Losses:</string>
 </resources>

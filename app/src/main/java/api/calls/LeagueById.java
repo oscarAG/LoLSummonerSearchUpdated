@@ -24,6 +24,7 @@ import oscar.alexander.garcia.lolsummonersearch.MainActivity;
 public class LeagueById extends AsyncTask<Void, Void, Void>{
     private AsyncCallback asyncCallback;
     private String jsonResponse;
+    private String name;
     private boolean isSuccess;
     private URL url;
     private long id;
@@ -32,8 +33,9 @@ public class LeagueById extends AsyncTask<Void, Void, Void>{
     private int wins;
     private int losses;
 
-    public LeagueById(long id){
+    public LeagueById(long id, String name){
         this.id = id;
+        this.name = name;
         try {
             url = new URL("https://"+MainActivity.mRegionCode+".api.pvp.net/api/lol/"+MainActivity.mRegionCode+"/v2.5/league/by-summoner/"+id+"/entry?api_key="+MainActivity.API_KEY);
         } catch (MalformedURLException e) {
@@ -64,15 +66,21 @@ public class LeagueById extends AsyncTask<Void, Void, Void>{
         //parse info
         if(jsonResponse != null){
             try {
+                //todo: this shit is all fucked up, cant get the wins or losses. WAIT it works but only using the LEAGUE endpoint,
+                //todo: which gets data for the current league and persists throughout all seasons. Change that. Get the data from the ranked champion object list.
                 JSONObject obj = new JSONObject(jsonResponse);
                 JSONArray arr = obj.getJSONArray(String.valueOf(id));
                 for(int i = 0; i < arr.length(); i++){
                     if(arr.getJSONObject(i).getString("queue").equals("RANKED_SOLO_5x5")){
-                        JSONArray entriesSubArray = arr.getJSONObject(0).getJSONArray("entries"); //For division, hot streak, etc.
-                        setDivision(entriesSubArray.getJSONObject(0).getString("division"));
-                        setTier(arr.getJSONObject(0).getString("tier"));
-                        setWins(entriesSubArray.getJSONObject(0).getInt("wins"));
-                        setLosses(entriesSubArray.getJSONObject(0).getInt("losses"));
+                        setTier(arr.getJSONObject(i).getString("tier"));
+                        JSONArray entriesSubArray = arr.getJSONObject(i).getJSONArray("entries"); //For division, hot streak, etc.
+                        for(int j = 0; j < entriesSubArray.length(); j++){
+                            if(entriesSubArray.getJSONObject(j).getString("playerOrTeamName").equals(name)){
+                                setDivision(entriesSubArray.getJSONObject(j).getString("division"));
+                                setWins(entriesSubArray.getJSONObject(j).getInt("wins"));
+                                setLosses(entriesSubArray.getJSONObject(j).getInt("losses"));
+                            }
+                        }
                     }
                 }
             } catch (JSONException e) {
