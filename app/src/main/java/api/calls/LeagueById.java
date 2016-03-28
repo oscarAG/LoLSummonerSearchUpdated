@@ -66,8 +66,6 @@ public class LeagueById extends AsyncTask<Void, Void, Void>{
         //parse info
         if(jsonResponse != null){
             try {
-                //todo: this shit is all fucked up, cant get the wins or losses. WAIT it works but only using the LEAGUE endpoint,
-                //todo: which gets data for the current league and persists throughout all seasons. Change that. Get the data from the ranked champion object list.
                 JSONObject obj = new JSONObject(jsonResponse);
                 JSONArray arr = obj.getJSONArray(String.valueOf(id));
                 for(int i = 0; i < arr.length(); i++){
@@ -77,8 +75,6 @@ public class LeagueById extends AsyncTask<Void, Void, Void>{
                         for(int j = 0; j < entriesSubArray.length(); j++){
                             if(entriesSubArray.getJSONObject(j).getString("playerOrTeamName").equals(name)){
                                 setDivision(entriesSubArray.getJSONObject(j).getString("division"));
-                                setWins(entriesSubArray.getJSONObject(j).getInt("wins"));
-                                setLosses(entriesSubArray.getJSONObject(j).getInt("losses"));
                             }
                         }
                     }

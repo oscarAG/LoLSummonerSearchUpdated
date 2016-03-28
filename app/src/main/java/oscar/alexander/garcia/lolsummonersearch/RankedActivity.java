@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 public class RankedActivity extends AppCompatActivity {
 
     @Override
@@ -47,5 +49,12 @@ public class RankedActivity extends AppCompatActivity {
         lossesText.setText(lossesStr);
         TextView lossesValue = (TextView)findViewById(R.id.tv_lossesTextValue);
         lossesValue.setText(String.valueOf(MainActivity.summoner.getRanked_solo_losses()));
+        //Win Ratio
+        TextView winRatioText = (TextView)findViewById(R.id.tv_winRatioText);
+        String ratioStr = getString(R.string.win_ratio) + " ";
+        winRatioText.setText(ratioStr);
+        TextView winRatioValue = (TextView)findViewById(R.id.tv_winRatioValueText);
+        String winPerc = new DecimalFormat("##.##").format(((double)MainActivity.summoner.getRanked_solo_wins() / ((double)MainActivity.summoner.getRanked_solo_wins() + (double)MainActivity.summoner.getRanked_solo_losses()))*100)+"%";
+        winRatioValue.setText(winPerc);
     }
 }

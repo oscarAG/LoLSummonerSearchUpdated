@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -305,8 +304,15 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
 
     //do when everything is completed
     private void doneOperation(){
-        reset();
-        Log.d("myapp", "Reset.");
+        //get the id '0' and get total sessions won and lost
+        for(ChampionRankedObject obj : rankedChampObjects){
+            if(obj.getId() == 0){
+                //overall stats found
+                summoner.setRanked_solo_wins(obj.getTotalSessionsWon());
+                summoner.setRanked_solo_losses(obj.getTotalSessionsLost());
+                Log.d("myapp", "Wins, losses: " + obj.getTotalSessionsWon() + " " + obj.getTotalSessionsLost());
+            }
+        }
         Log.d("myapp", "All calls done.");
         Intent intent = new Intent(this, RankedActivity.class);
         startActivity(intent);

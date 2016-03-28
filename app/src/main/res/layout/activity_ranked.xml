@@ -88,24 +88,25 @@
                         android:textSize="20sp"
                         android:textColor="@color/orange"/>
                 </LinearLayout>
-                <!-- Win Ratio -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/tv_winRatioText"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="20sp"
-                        android:textColor="@color/white"/>
-                    <TextView
-                        android:id="@+id/tv_winRatioValueText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:textColor="@color/orange"/>
-                </LinearLayout>
+        </LinearLayout>
+        <!-- Win Ratio -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_winRatioText"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/tv_winRatioValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/orange"/>
         </LinearLayout>
         <TextView
             android:id="@+id/tv_grid_view_hint"
