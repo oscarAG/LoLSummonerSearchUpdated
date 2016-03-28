@@ -116,13 +116,16 @@
             android:textColor="@color/whiteHeavyOpaque"
             android:textSize="15sp"
             android:layout_gravity="center"/>
-        <GridView
-            android:id="@+id/gv_champions"
+        <ListView
+            android:id="@+id/lv_champions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <ScrollView
+            android:id="@+id/sv_champions"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="start"
-            android:numColumns="1"
             android:scrollbarThumbVertical="@drawable/custom_vertical_scrollbar"
-            android:scrollbarSize="3dp"/>
+            android:scrollbarSize="3dp">
+        </ScrollView>
     </LinearLayout>
 </LinearLayout>

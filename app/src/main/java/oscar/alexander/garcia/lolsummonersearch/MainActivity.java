@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     public static String mSeasonCode;
     public static String imageVersion;
     protected static String selectedSeason;
-    protected static Summoner summoner;
-    protected static List<ChampionRankedObject> rankedChampObjects;
+    public static Summoner summoner;
+    public static List<ChampionRankedObject> rankedChampObjects;
     //API endpoint calls
     private SummonerByName summonerObject;
     private RankedStatsById rankedStatsObject;

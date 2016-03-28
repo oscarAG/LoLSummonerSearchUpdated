@@ -3,9 +3,14 @@ package oscar.alexander.garcia.lolsummonersearch;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+
+import oscar.alexander.garcia.lolsummonersearch.adapters.ChampionsAdapter;
 
 public class RankedActivity extends AppCompatActivity {
 
@@ -59,5 +64,9 @@ public class RankedActivity extends AppCompatActivity {
         //Ranked champs hint
         TextView rankedChampsHint= (TextView)findViewById(R.id.tv_ranked_champs_hint);
         rankedChampsHint.setText(getString(R.string.ranked_champ_hint));
+        //Champions scrollview
+        ChampionsAdapter championsAdapter = new ChampionsAdapter(this);
+        ListView championsListView = (ListView)findViewById(R.id.lv_champions);
+        championsListView.setAdapter(championsAdapter);
     }
 }

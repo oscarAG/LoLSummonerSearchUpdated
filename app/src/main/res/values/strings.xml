@@ -32,4 +32,5 @@
     <string name="losses_txt">Losses:</string>
     <string name="win_ratio">Win Ratio:</string>
     <string name="ranked_champ_hint">Pick a champion for more information:</string>
+    <string name="scroll_games">Games:</string>
 </resources>
