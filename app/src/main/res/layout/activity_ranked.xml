@@ -109,7 +109,7 @@
                 android:textColor="@color/orange"/>
         </LinearLayout>
         <TextView
-            android:id="@+id/tv_grid_view_hint"
+            android:id="@+id/tv_ranked_champs_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"

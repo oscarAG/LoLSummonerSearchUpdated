@@ -56,5 +56,8 @@ public class RankedActivity extends AppCompatActivity {
         TextView winRatioValue = (TextView)findViewById(R.id.tv_winRatioValueText);
         String winPerc = new DecimalFormat("##.##").format(((double)MainActivity.summoner.getRanked_solo_wins() / ((double)MainActivity.summoner.getRanked_solo_wins() + (double)MainActivity.summoner.getRanked_solo_losses()))*100)+"%";
         winRatioValue.setText(winPerc);
+        //Ranked champs hint
+        TextView rankedChampsHint= (TextView)findViewById(R.id.tv_ranked_champs_hint);
+        rankedChampsHint.setText(getString(R.string.ranked_champ_hint));
     }
 }

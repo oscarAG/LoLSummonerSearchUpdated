@@ -31,4 +31,5 @@
     <string name="wins_txt">Wins:</string>
     <string name="losses_txt">Losses:</string>
     <string name="win_ratio">Win Ratio:</string>
+    <string name="ranked_champ_hint">Pick a champion for more information:</string>
 </resources>
