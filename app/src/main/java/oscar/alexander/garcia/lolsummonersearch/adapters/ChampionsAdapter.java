@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.List;
 
+import api.objects.ChampionRankedObject;
 import oscar.alexander.garcia.lolsummonersearch.MainActivity;
 import oscar.alexander.garcia.lolsummonersearch.R;
 
@@ -26,7 +29,7 @@ public class ChampionsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return MainActivity.rankedChampObjects.size(); //don't count the overall item
+        return MainActivity.rankedChampObjects.size() - 1; //don't count the overall item
     }
 
     @Override
@@ -43,30 +46,36 @@ public class ChampionsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(convertView == null){
-            return populate(inflater, parent, position);
+            return populate(inflater, parent, position + 1);
         }
         else{
-            return populate(inflater, parent, position);
+            return populate(inflater, parent, position + 1);
         }
 
     }
 
     private View populate(LayoutInflater inflater, ViewGroup parent, int position){
+        //sort the list
+        for(int i = 0; i < MainActivity.rankedChampObjects.size(); i++){
+            int highestIndex = i;
+            for(int j = i; j < MainActivity.rankedChampObjects.size(); j++){
+                if(MainActivity.rankedChampObjects.get(highestIndex).getTotalSessionsPlayed() < MainActivity.rankedChampObjects.get(j).getTotalSessionsPlayed()){
+                    highestIndex = j;
+                }
+            }
+            Collections.swap(MainActivity.rankedChampObjects, i, highestIndex);
+        }
         // get layout from custom scrollview item
         View listView = inflater.inflate(R.layout.custom_listview_item, parent, false);
         // Champion name
-        TextView textView = (TextView) listView.findViewById(R.id.grid_item_label);
-        textView.setText(MainActivity.rankedChampObjects.get(position).getName());
+        ((TextView) listView.findViewById(R.id.grid_item_label)).setText(MainActivity.rankedChampObjects.get(position).getName());
         // Champion image
-        ImageView imageView = (ImageView) listView.findViewById(R.id.grid_item_image);
-        imageView.setImageBitmap(MainActivity.rankedChampObjects.get(position).getChampionIcon());
+        ((ImageView) listView.findViewById(R.id.grid_item_image)).setImageBitmap(MainActivity.rankedChampObjects.get(position).getChampionIcon());
         // games value text view
-        TextView totalGamesValueTV = (TextView) listView.findViewById(R.id.tv_games_played_value);
-        totalGamesValueTV.setText(String.valueOf(MainActivity.rankedChampObjects.get(position).getTotalSessionsPlayed()));
+        ((TextView) listView.findViewById(R.id.tv_games_played_value)).setText(String.valueOf(MainActivity.rankedChampObjects.get(position).getTotalSessionsPlayed()));
         // win ratio text view
-        TextView winRatioValueTV = (TextView) listView.findViewById(R.id.tv_grid_win_ratio_value);
         String winRatio = new DecimalFormat("##.##").format(((double) MainActivity.rankedChampObjects.get(position).getTotalSessionsWon() / ((double) MainActivity.rankedChampObjects.get(position).getTotalSessionsPlayed())) * 100)+"%";
-        winRatioValueTV.setText(winRatio);
+        ((TextView) listView.findViewById(R.id.tv_grid_win_ratio_value)).setText(winRatio);
         return listView;
     }
 }
