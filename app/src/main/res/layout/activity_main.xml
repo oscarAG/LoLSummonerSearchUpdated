@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:orientation="vertical"
     tools:context=".MainActivity">
     <LinearLayout
         android:background="@color/blackHeavyOpaque"
@@ -15,67 +16,64 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical">
-            <LinearLayout
+            <ImageView
+                android:src="@drawable/logo_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"/>
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/whiteLightOpaque"
+                android:paddingBottom="30dp"/>
+            <TextView
+                android:id="@+id/tv_summoner"
+                android:textStyle="bold"
+                android:paddingBottom="5dp"
+                android:textSize="15sp"
+                android:textColor="@color/gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/summoner_label"
+                android:layout_gravity="start"/>
+            <EditText
+                android:id="@+id/name_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:hint="@string/name_hint"
+                android:textColor="@color/white"
+                android:textColorHint="@color/whiteHeavyOpaque"
+                android:textSize="15sp"
+                android:layout_marginBottom="20dp"
+                android:inputType="text" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_button"
+                android:textColor="@color/white"
+                android:background="@drawable/search_button"
+                android:textAllCaps="false"
+                android:height="50dp"
+                android:width="300dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="search"/>
+            <Spinner
+                android:id="@+id/spr_regions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
-                <ImageView
-                    android:src="@drawable/logo_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:paddingBottom="40dp"/>
-                <TextView
-                    android:id="@+id/tv_summoner"
-                    android:textStyle="bold"
-                    android:paddingBottom="5dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/gray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/summoner_label"
-                    android:layout_gravity="start"/>
-                <EditText
-                    android:id="@+id/name_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:hint="@string/name_hint"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/whiteHeavyOpaque"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="20dp"
-                    android:inputType="text" />
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/search_button"
-                    android:textColor="@color/white"
-                    android:background="@drawable/search_button"
-                    android:textAllCaps="false"
-                    android:height="50dp"
-                    android:width="300dp"
-                    android:layout_marginBottom="20dp"
-                    android:onClick="search"/>
-                <Spinner
-                    android:id="@+id/spr_regions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingBottom="20dp"/>
-                <Spinner
-                    android:id="@+id/spr_seasons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+                android:paddingBottom="20dp"/>
+            <Spinner
+                android:id="@+id/spr_seasons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

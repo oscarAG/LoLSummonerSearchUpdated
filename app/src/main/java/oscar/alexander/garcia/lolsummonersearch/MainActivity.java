@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         //initialize view components
         initializeRegionsSpinner();
         initializeSeasonsSpinner();
+        ((TextView)findViewById(R.id.version)).setText(R.string.version);
     }
 
     @Override

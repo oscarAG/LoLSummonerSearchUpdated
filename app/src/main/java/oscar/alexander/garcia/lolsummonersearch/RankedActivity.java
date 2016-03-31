@@ -38,7 +38,7 @@ public class RankedActivity extends AppCompatActivity {
             rank.setText(error); //not ranked for current season
         }
         else{
-            String rankText = MainActivity.summoner.getDivision() + " " + MainActivity.summoner.getTier();
+            String rankText = MainActivity.summoner.getTier() + " " + MainActivity.summoner.getDivision();
             rank.setText(rankText); //currently ranked
         }
         //Wins
