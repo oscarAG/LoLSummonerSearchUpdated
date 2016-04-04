@@ -32,7 +32,7 @@ import api.objects.Summoner;
 public class MainActivity extends AppCompatActivity implements SummonerByName.AsyncCallback, RankedStatsById.AsyncCallback,
         ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback, LeagueById.AsyncCallback{
 
-    public static final String API_KEY = "5ef85c1b-a4b7-4001-8b12-9a4fad596e08";
+    public static final String API_KEY = "c1b17262-197d-481e-98df-bc0d18153ac4";
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
     public static String mRegionCode;

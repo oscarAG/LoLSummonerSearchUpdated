@@ -1,7 +1,11 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -10,15 +14,25 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
+import api.objects.ChampionRankedObject;
 import oscar.alexander.garcia.lolsummonersearch.adapters.ChampionsAdapter;
 
 public class RankedActivity extends AppCompatActivity {
+
+    public static ChampionRankedObject selectedChampion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ranked);
         setViews();
+        selectedChampion = null;
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        selectedChampion = null;
     }
 
     private void setViews(){
@@ -68,5 +82,15 @@ public class RankedActivity extends AppCompatActivity {
         ChampionsAdapter championsAdapter = new ChampionsAdapter(this);
         ListView championsListView = (ListView)findViewById(R.id.lv_champions);
         championsListView.setAdapter(championsAdapter);
+        championsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                int shiftedPosition = position+1;
+                selectedChampion = MainActivity.rankedChampObjects.get(shiftedPosition);
+                Log.d("myapp", "Selected champion: " + selectedChampion.getName());
+                Intent myIntent = new Intent(RankedActivity.this, ChampionActivity.class);
+                RankedActivity.this.startActivity(myIntent);
+            }
+        });
     }
 }
