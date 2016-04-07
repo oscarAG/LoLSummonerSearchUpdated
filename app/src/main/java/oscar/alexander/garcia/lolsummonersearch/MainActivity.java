@@ -1,5 +1,6 @@
 package oscar.alexander.garcia.lolsummonersearch;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         ChampionStaticImageData.AsyncCallback, ProfileIcon.AsyncCallback, AllChampionsSquareImage.AsyncCallback, LeagueById.AsyncCallback{
 
     public static final String API_KEY = "c1b17262-197d-481e-98df-bc0d18153ac4";
+    private ProgressDialog progress;
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
     public static String mRegionCode;
@@ -77,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
 
     //search button onClick method
     public void search(View v){
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.show();
         //get values from the view components
         setRegionCode(mRegionsSpinner.getSelectedItem().toString());
         setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
@@ -317,6 +323,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         Log.d("myapp", "All calls done.");
         Intent intent = new Intent(this, RankedActivity.class);
+        progress.dismiss(); //dismiss progress spinner
         startActivity(intent);
     }
 
