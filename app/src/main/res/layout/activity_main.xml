@@ -53,6 +53,7 @@
                 android:layout_marginBottom="20dp"
                 android:inputType="text" />
             <Button
+                android:id="@+id/search_main_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/search_button"
@@ -63,17 +64,21 @@
                 android:width="300dp"
                 android:layout_marginBottom="20dp"
                 android:onClick="search"/>
-            <Spinner
-                android:id="@+id/spr_regions"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="20dp"/>
-            <Spinner
-                android:id="@+id/spr_seasons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:orientation="horizontal"
+                android:paddingTop="30dp"
+                android:gravity="center">
+                <Spinner
+                    android:id="@+id/spr_regions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Spinner
+                    android:id="@+id/spr_seasons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

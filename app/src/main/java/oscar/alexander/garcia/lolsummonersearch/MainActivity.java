@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
     private ProgressDialog progress;
     private Spinner mRegionsSpinner;
     private Spinner mSeasonsSpinner;
+    private Button mSearchButton;
     public static String mRegionCode;
     public static String mSeasonCode;
     public static String imageVersion;
@@ -65,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         //initialize view components
         initializeRegionsSpinner();
         initializeSeasonsSpinner();
+        mSearchButton = (Button)findViewById(R.id.search_main_btn);
         ((TextView)findViewById(R.id.version)).setText(R.string.version);
+        progress = new ProgressDialog(this);
     }
 
     @Override
@@ -79,19 +83,27 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
 
     //search button onClick method
     public void search(View v){
-        progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
-        progress.show();
-        //get values from the view components
-        setRegionCode(mRegionsSpinner.getSelectedItem().toString());
-        setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
         EditText nameInput = (EditText)findViewById(R.id.name_input);
-        Log.d("myapp", "New search - " + nameInput.getText().toString().toLowerCase().replace(" ", ""));
-        //execute first call
-        summonerObject = new SummonerByName(nameInput.getText().toString().toLowerCase().replace(" ", ""));
-        summonerObject.registerCallBack(this);
-        summonerObject.execute();
+        if(nameInput.getText().toString().equals("")){
+            Toast toast = Toast.makeText(this, "Please enter a name into the search field.", Toast.LENGTH_LONG);
+            toast.show();
+            reset();
+        }
+        else{
+            mSearchButton.setEnabled(false);
+            //get values from the view components
+            setRegionCode(mRegionsSpinner.getSelectedItem().toString());
+            setSeasonCode(mSeasonsSpinner.getSelectedItem().toString());
+            Log.d("myapp", "New search - " + nameInput.getText().toString().toLowerCase().replace(" ", ""));
+            //set progress dialog
+            progress.setTitle("Loading information for " + nameInput.getText().toString());
+            progress.setMessage("Please wait while loading...");
+            progress.show();
+            //execute first call
+            summonerObject = new SummonerByName(nameInput.getText().toString().toLowerCase().replace(" ", ""));
+            summonerObject.registerCallBack(this);
+            summonerObject.execute();
+        }
     }
 
     //1st call finished
@@ -102,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         if(summonerObject.isSuccess()){
             Log.d("myapp", "Success: summonerCallBack");
             summoner = new Summoner(summonerObject.getName(), summonerObject.getId(),summonerObject.getRevisionDate(), summonerObject.getProfileIconId(),summonerObject.getLevel());
+            progress.setTitle("Loading information for " + summoner.getFormattedName());//update the name on the loading dialog
             //execute ranked stats
             rankedStatsObject = new RankedStatsById(summoner.getId());
             rankedStatsObject.registerCallBack(this);
@@ -111,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
             Log.d("myapp", "Fail: summonerCallBack");
             Toast toast = Toast.makeText(this, "That summoner doesn't exist. Please try another name.", Toast.LENGTH_LONG);
             toast.show();
+            reset();
         }
         summIsDone = true;
         if(isAllDone()){
@@ -256,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         else{
             Log.d("myapp", "Fail: championStaticImageData");
+            //reset();
         }
         champImageDataIsDone = true;
         if(isAllDone()){
@@ -274,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         else{
             Log.d("myapp", "Fail: profileIcon");
+            //reset();
         }
         profileIconIsDone = true;
         if(isAllDone()){
@@ -303,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         }
         else{
             Log.d("myapp", "Fail: allChampionSquareImageObject");
+            //reset();
         }
         allChampSquaresIsDone = true;
         if(isAllDone()){
@@ -338,6 +355,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         profileIconIsDone = false;
         allChampSquaresIsDone = false;
         leagueIsDone = false;
+        progress.dismiss();
+        progress = new ProgressDialog(this);
+        mSearchButton.setEnabled(true);
     }
 
     //dynamically initialize a spinner for the regions
@@ -345,6 +365,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         mRegionsSpinner = (Spinner) findViewById(R.id.spr_regions);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mRegionsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
+        }
+        else{
+            mRegionsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark), PorterDuff.Mode.SRC_ATOP);
         }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -360,6 +383,9 @@ public class MainActivity extends AppCompatActivity implements SummonerByName.As
         mSeasonsSpinner = (Spinner) findViewById(R.id.spr_seasons);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mSeasonsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark, getTheme()), PorterDuff.Mode.SRC_ATOP);
+        }
+        else{
+            mSeasonsSpinner.getBackground().setColorFilter(getResources().getColor(R.color.indigoDark), PorterDuff.Mode.SRC_ATOP);
         }
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,

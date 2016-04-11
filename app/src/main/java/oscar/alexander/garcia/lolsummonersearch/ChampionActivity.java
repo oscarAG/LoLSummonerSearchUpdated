@@ -26,7 +26,8 @@ public class ChampionActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.tv_act_champ_games)).setText(String.valueOf(RankedActivity.selectedChampion.getTotalSessionsPlayed()));
         ((TextView)findViewById(R.id.tv_act_champ_games_won)).setText(String.valueOf(RankedActivity.selectedChampion.getTotalSessionsWon()));
         ((TextView)findViewById(R.id.tv_act_champ_games_lost)).setText(String.valueOf(RankedActivity.selectedChampion.getTotalSessionsLost()));
-        ((TextView)findViewById(R.id.tv_act_champs_win_ratio)).setText(getWinPercentage(RankedActivity.selectedChampion.getTotalSessionsWon(), RankedActivity.selectedChampion.getTotalSessionsLost()));
+        String winRatio = getWinPercentage(RankedActivity.selectedChampion.getTotalSessionsWon(), RankedActivity.selectedChampion.getTotalSessionsLost()) + "%";
+        ((TextView)findViewById(R.id.tv_act_champs_win_ratio)).setText(winRatio);
         ((TextView)findViewById(R.id.tv_average_kills)).setText(getRoundedValue(RankedActivity.selectedChampion.getTotalChampionKills(), RankedActivity.selectedChampion.getTotalSessionsPlayed()));
         ((TextView)findViewById(R.id.tv_average_deaths)).setText(getRoundedValue(RankedActivity.selectedChampion.getTotalDeathsPerSession(), RankedActivity.selectedChampion.getTotalSessionsPlayed()));
         ((TextView)findViewById(R.id.tv_average_assists)).setText(getRoundedValue(RankedActivity.selectedChampion.getTotalAssists(),RankedActivity.selectedChampion.getTotalSessionsPlayed()));
